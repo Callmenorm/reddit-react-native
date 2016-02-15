@@ -12,24 +12,48 @@ import React, {
   View
 } from 'react-native';
 
+import {
+  REDIRECT_URI,
+  CLIENT_ID,
+  REDDIT_ACCESS_TOKEN_KEY
+} from './src/utilities/constants';
 import parseRedditPassback from './src/utilities/parseRedditPassback';
+import redditFetcher from './src/utilities/redditFetcher';
+import refreshRedditToken from './src/utilities/authentication';
 const randomState = Math.floor(1000000 * Math.random());
-const uri = `https://ssl.reddit.com/api/v1/authorize?client_id=t7x3gcvSp8A0_A&response_type=code&state=${randomState}&redirect_uri=reactNativeReddit://response&duration=permanent&scope=read`
+const uri = `https://ssl.reddit.com/api/v1/authorize.compact?client_id=${CLIENT_ID}&response_type=code&state=${randomState}&redirect_uri=${REDIRECT_URI}&duration=permanent&scope=read`
+delete GLOBAL.XMLHttpRequest;
 
 var Reddit = React.createClass({
   displayName: 'Reddit',
   componentWillMount() {
-    AsyncStorage.getItem('redditToken')
+    AsyncStorage.getItem(REDDIT_ACCESS_TOKEN_KEY)
       .then(token => {
-        console.log('asyncstorage token', token);
+        if (token !== null) {
+          return redditFetcher('/api/info')
+        } else {
+          LinkingIOS.canOpenURL(uri, (supported) => {
+            if (!supported) {
+              AlertIOS.alert('Can\'t handle url: ' + uri);
+            } else {
+              LinkingIOS.openURL(uri);
+            }
+          });
+        }
+      })
+      .then(response => {
+        return response.json();
+      })
+      .catch(() => {
+        console.log('about to open oauth');
+        LinkingIOS.canOpenURL(uri, (supported) => {
+          if (!supported) {
+            AlertIOS.alert('Can\'t handle url: ' + uri);
+          } else {
+            LinkingIOS.openURL(uri);
+          }
+        });
       });
-    LinkingIOS.canOpenURL(uri, (supported) => {
-      if (!supported) {
-        AlertIOS.alert('Can\'t handle url: ' + uri);
-      } else {
-        LinkingIOS.openURL(uri);
-      }
-    });
   },
   componentDidMount() {
     LinkingIOS.addEventListener('url', this._handleURL);
@@ -38,7 +62,8 @@ var Reddit = React.createClass({
     LinkingIOS.removeEventListener('url', this._handleURL);
   },
   _handleURL(event) {
-    AsyncStorage.setItem('redditToken', parseRedditPassback(event.url));
+    const accessCode = parseRedditPassback(event.url);
+    refreshRedditToken(accessCode);
   },
   render() {
     return (
