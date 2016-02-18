@@ -2,6 +2,10 @@
   "env": {
     "es6": true
   },
+  "globals": {
+    "fetch": true,
+    "btoa": true
+  },
   "parser": "babel-eslint",
   "plugins": [
     'react',
