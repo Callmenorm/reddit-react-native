@@ -9,30 +9,27 @@ import React, {
 } from 'react-native';
 
 import {
-  OAUTH_URI,
-  REDDIT_ACCESS_TOKEN_KEY
+  REDDIT_ACCESS_TOKEN_KEY,
+  REDDIT_REFRESH_TOKEN_KEY
 } from './src/utilities/constants';
 import {
   getRedditToken,
-  getOauthToken
+  getOauthTokens
 } from './src/utilities/authentication';
 import parseRedditPassback from './src/utilities/parseRedditPassback';
 import redditFetcher from './src/utilities/redditFetcher';
 delete GLOBAL.XMLHttpRequest;
 
-var mountCount = 0;
 var Reddit = React.createClass({
   displayName: 'Reddit',
   componentWillMount() {
-    mountCount += 1;
-    console.log('mounCount', mountCount);
+    AsyncStorage.multiRemove([REDDIT_ACCESS_TOKEN_KEY, REDDIT_REFRESH_TOKEN_KEY]);
     AsyncStorage.getItem(REDDIT_ACCESS_TOKEN_KEY)
       .then(token => {
-        if (token !== null) {
-          return redditFetcher('/api/info');
-        } else {
-          return getOauthToken();
-        }
+        return token === null ? getOauthTokens() : undefined;
+      })
+      .then(() => {
+        return redditFetcher('/api/info');
       })
       .then(response => {
         return response.json();
