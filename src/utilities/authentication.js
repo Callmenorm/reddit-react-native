@@ -6,6 +6,7 @@ import {
   REDDIT_ACCESS_TOKEN_KEY,
   REDDIT_REFRESH_TOKEN_KEY
 } from './constants';
+
 import {
   AsyncStorage,
   LinkingIOS
@@ -20,7 +21,8 @@ const getRedditToken = (accessCode) => {
   return fetch('https://www.reddit.com/api/v1/access_token', {
     method: 'POST',
     headers: {
-      Authorization: getBasicAuth()
+      Authorization: getBasicAuth(),
+      'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: `grant_type=authorization_code&code=${accessCode}&redirect_uri=${REDIRECT_URI}`
   })
@@ -38,20 +40,21 @@ const refreshRedditToken = () => {
       return fetch('https://www.reddit.com/api/v1/access_token', {
         method: 'POST',
         headers: {
-          Authorization: getBasicAuth()
+          Authorization: getBasicAuth(),
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `grant_type=refresh_token&refresh_token=${refreshToken}`
+        body: `grant_type=refresh_token&refresh_token=${refreshToken}&redirect_uri=${REDIRECT_URI}`
       });
     })
     .then((response) => {
       return response.json();
     })
     .then((json) => {
-      return AsyncStorage.setItem(REDDIT_REFRESH_TOKEN_KEY, json.access_token);
+      return AsyncStorage.setItem(REDDIT_ACCESS_TOKEN_KEY, json.access_token);
     });
 };
 
-const getOauthToken = () => {
+const getOauthTokens = () => {
   return new Promise((fulfill, reject) => {
     LinkingIOS.canOpenURL(OAUTH_URI, (supported) => {
       if (!supported) {
@@ -60,11 +63,11 @@ const getOauthToken = () => {
         fulfill(LinkingIOS.openURL(OAUTH_URI));
       }
     });
-  })
+  });
 };
 
 export {
-  getOauthToken,
+  getOauthTokens,
   getRedditToken,
   refreshRedditToken
 };

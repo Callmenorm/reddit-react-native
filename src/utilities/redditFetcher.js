@@ -14,9 +14,13 @@ const redditFetcher = (url, config) => {
     const redditUrl = `https://oauth.reddit.com/${url}`;
     return AsyncStorage.getItem(REDDIT_ACCESS_TOKEN_KEY)
       .then((token) => {
+        if (token === null) {
+          return Promise.reject('do not have an oauth token');
+        }
         const requestConfig = config || {};
         const redditHeaders = Object.assign({}, requestConfig.headers, {
-          Authorization: `bearer ${token}`
+          Authorization: `bearer ${token}`,
+          'Content-Type': 'application/json'
         });
         const redditConfig = Object.assign({}, config, {
           headers: redditHeaders

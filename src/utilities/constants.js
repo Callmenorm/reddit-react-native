@@ -21,7 +21,7 @@ const OAUTH_SCOPES = [
   'wikiread'
 ];
 
-const OAUTH_URI = `https://ssl.reddit.com/api/v1/authorize.compact?client_id=${CLIENT_ID}&response_type=code&state=${Math.floor(10000 * Math.random())}&redirect_uri=${REDIRECT_URI}&duration=permanent&scope=${OAUTH_SCOPES.join('%20')}`
+const OAUTH_URI = `https://ssl.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=code&state=${Math.floor(10000 * Math.random())}&redirect_uri=${REDIRECT_URI}&duration=permanent&scope=${OAUTH_SCOPES.join('%20')}`
 
 export {
   OAUTH_URI,

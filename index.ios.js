@@ -1,5 +1,4 @@
 import React, {
-  AlertIOS,
   AppRegistry,
   AsyncStorage,
   StyleSheet,
@@ -9,8 +8,7 @@ import React, {
 } from 'react-native';
 
 import {
-  REDDIT_ACCESS_TOKEN_KEY,
-  REDDIT_REFRESH_TOKEN_KEY
+  REDDIT_ACCESS_TOKEN_KEY
 } from './src/utilities/constants';
 import {
   getRedditToken,
@@ -18,23 +16,24 @@ import {
 } from './src/utilities/authentication';
 import parseRedditPassback from './src/utilities/parseRedditPassback';
 import redditFetcher from './src/utilities/redditFetcher';
+
 delete GLOBAL.XMLHttpRequest;
 
 var Reddit = React.createClass({
   displayName: 'Reddit',
   componentWillMount() {
-    AsyncStorage.multiRemove([REDDIT_ACCESS_TOKEN_KEY, REDDIT_REFRESH_TOKEN_KEY]);
     AsyncStorage.getItem(REDDIT_ACCESS_TOKEN_KEY)
       .then(token => {
         return token === null ? getOauthTokens() : undefined;
       })
       .then(() => {
-        return redditFetcher('/api/info');
+        return redditFetcher('/api/v1/me');
       })
-      .then(response => {
-        return response.json();
+      .then(json => {
+        console.log(json);
       })
-      .catch(() => {
+      .catch((reason) => {
+        console.log(reason);
       });
   },
   componentDidMount() {
