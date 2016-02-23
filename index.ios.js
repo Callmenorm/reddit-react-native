@@ -15,7 +15,7 @@ import {
   getOauthTokens
 } from './src/utilities/authentication';
 import parseRedditPassback from './src/utilities/parseRedditPassback';
-import redditFetcher from './src/utilities/redditFetcher';
+import Toc from './src/views/toc/toc';
 
 delete GLOBAL.XMLHttpRequest;
 
@@ -25,12 +25,6 @@ var Reddit = React.createClass({
     AsyncStorage.getItem(REDDIT_ACCESS_TOKEN_KEY)
       .then(token => {
         return token === null ? getOauthTokens() : undefined;
-      })
-      .then(() => {
-        return redditFetcher('/api/v1/me');
-      })
-      .then(json => {
-        console.log(json);
       })
       .catch((reason) => {
         console.log(reason);
@@ -49,9 +43,7 @@ var Reddit = React.createClass({
   render() {
     return (
       <View style={styles.container}>
-        <Text>
-          We have a winner
-        </Text>
+        <Toc/>
       </View>
     );
   }
