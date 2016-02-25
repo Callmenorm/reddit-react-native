@@ -1,9 +1,9 @@
 import React, {
   AppRegistry,
   AsyncStorage,
-  StyleSheet,
+  Navigator,
   LinkingIOS,
-  Text,
+  StyleSheet,
   View
 } from 'react-native';
 
@@ -16,10 +16,11 @@ import {
 } from './src/utilities/authentication';
 import parseRedditPassback from './src/utilities/parseRedditPassback';
 import Toc from './src/views/toc/toc';
+import Header from './src/shared/header';
 
 delete GLOBAL.XMLHttpRequest;
 
-var Reddit = React.createClass({
+const App = React.createClass({
   displayName: 'Reddit',
   componentWillMount() {
     AsyncStorage.getItem(REDDIT_ACCESS_TOKEN_KEY)
@@ -55,6 +56,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF'
+  }
+});
+
+var Reddit = React.createClass({
+  renderScene(route, navigator) {
+    switch (route.name) {
+      case 'Reddit':
+        return (
+          <View>
+            <Header />
+            <App navigator={navigator} />
+          </View>
+        );
+      default:
+        return (
+          <View>
+            <Header />
+            <App navigator={navigator} />
+          </View>
+        );
+    }
+  },
+  render() {
+    return (
+      <Navigator
+        initialRoute={{name: 'App'}}
+        renderScene={this.renderScene}
+        style={{flex: 1}}
+      />
+    );
   }
 });
 
