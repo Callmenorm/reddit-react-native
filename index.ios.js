@@ -16,6 +16,7 @@ import {
 } from './src/utilities/authentication';
 import parseRedditPassback from './src/utilities/parseRedditPassback';
 import Toc from './src/views/toc/toc';
+import Hot from './src/views/hot/hot';
 import Header from './src/shared/header';
 
 delete GLOBAL.XMLHttpRequest;
@@ -62,17 +63,24 @@ const styles = StyleSheet.create({
 var Reddit = React.createClass({
   renderScene(route, navigator) {
     switch (route.name) {
-      case 'Reddit':
+      case 'App':
         return (
           <View>
-            <Header />
+            <Header navigator={navigator} />
             <App navigator={navigator} />
+          </View>
+        );
+      case 'Hot':
+        return (
+          <View>
+            <Header navigator={navigator} />
+            <Hot navigator={navigator} />
           </View>
         );
       default:
         return (
           <View>
-            <Header />
+            <Header navigator={navigator}/>
             <App navigator={navigator} />
           </View>
         );
