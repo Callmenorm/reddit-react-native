@@ -12,8 +12,10 @@ import {
   LinkingIOS
 } from 'react-native';
 
+import base64 from 'base-64';
+
 const getBasicAuth = () => {
-  const base64ClientID = btoa(`${CLIENT_ID}:`);
+  const base64ClientID = base64.encode(`${CLIENT_ID}:`);
   return `Basic ${base64ClientID}`;
 };
 
