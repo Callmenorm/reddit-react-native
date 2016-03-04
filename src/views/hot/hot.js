@@ -35,6 +35,7 @@ const Hot = React.createClass({
         <ListView
           dataSource={this.state.dataSource}
           renderRow={(row) => <Container item={row.data} />}
+          initalListSize={25}
         />
       </View>
     );

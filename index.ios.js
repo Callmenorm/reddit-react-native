@@ -77,7 +77,7 @@ var Reddit = React.createClass({
         return (
           <View style={styles.flex}>
             <Header navigator={navigator} />
-            <Hot style={styles.flex} navigator={navigator} />
+            <Hot navigator={navigator} />
           </View>
         );
       default:
