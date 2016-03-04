@@ -1,13 +1,10 @@
 'use strict'
-import React, {ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {ListView, StyleSheet, Text, View} from 'react-native';
 import redditFetcher from '../../utilities/redditFetcher';
 import Container from '../items/container';
 
 const styles = StyleSheet.create({
-  scroll: {
-    flex: 1
-  },
-  contentContainer: {
+  list: {
     flex: 1
   }
 });
@@ -16,7 +13,10 @@ const Hot = React.createClass({
   displayName: 'Hot',
   getInitialState() {
     return {
-      hot: []
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (row1, row2) => row1 !== row2
+      }),
+      loaded: false
     };
   },
   componentDidMount() {
@@ -24,26 +24,18 @@ const Hot = React.createClass({
     .then(json => {
       console.log(json.data.children);
       this.setState({
-        hot: json.data.children
+        dataSource: this.state.dataSource.cloneWithRows(json.data.children),
+        loaded: true
       });
     });
   },
   _renderHot() {
     return (
-      <View>
-        <ScrollView
-          contentContainerStyle={styles.contentContainer}
-          style={styles.scroll}
-        >
-          {this.state.hot.map((item, idx) => {
-            return (
-              <Container
-                item={item.data}
-                key={idx}
-              />
-            );
-          })}
-        </ScrollView>
+      <View style={styles.list}>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={(row) => <Container item={row.data} />}
+        />
       </View>
     );
   },
@@ -55,7 +47,7 @@ const Hot = React.createClass({
     );
   },
   render() {
-    if (!this.state.hot) {
+    if (!this.state.loaded) {
       return this._renderNothing();
     } else {
       return this._renderHot();

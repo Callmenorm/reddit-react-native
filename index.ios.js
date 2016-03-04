@@ -57,6 +57,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF'
+  },
+  flex: {
+    flex: 1
   }
 });
 
@@ -65,21 +68,21 @@ var Reddit = React.createClass({
     switch (route.name) {
       case 'App':
         return (
-          <View>
+          <View style={styles.flex}>
             <Header navigator={navigator} />
             <App navigator={navigator} />
           </View>
         );
       case 'Hot':
         return (
-          <View>
+          <View style={styles.flex}>
             <Header navigator={navigator} />
-            <Hot navigator={navigator} />
+            <Hot style={styles.flex} navigator={navigator} />
           </View>
         );
       default:
         return (
-          <View>
+          <View style={styles.flex}>
             <Header navigator={navigator}/>
             <App navigator={navigator} />
           </View>
