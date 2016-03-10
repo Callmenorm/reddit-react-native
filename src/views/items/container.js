@@ -6,6 +6,7 @@ import React,{
 } from 'react-native';
 
 import {DEVICE_WIDTH} from '../../utilities/constants';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const styles = StyleSheet.create({
   container: {
@@ -45,7 +46,11 @@ const Container = React.createClass({
     const {title,  score} = this.props.item;
     return (
       <View style={styles.container}>
-        <Text style={styles.score}>{score}</Text>
+        <View>
+          <Icon.Button name="angle-up" backgroundColor="#3b5998" />
+          <Text style={styles.score}>{score}</Text>
+          <Icon.Button name="angle-down" backgroundColor="#3b5998" />
+        </View>
         <Text style={styles.title}>{title}</Text>
       </View>
     );

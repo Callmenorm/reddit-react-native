@@ -10,14 +10,21 @@
 #import "AppDelegate.h"
 
 #import "RCTRootView.h"
-#import "RCTLinkingManager.h"
-
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
+  for (NSString* family in [UIFont familyNames])
+  {
+    
+    NSLog(@"%@", family);
+    for (NSString* name in [UIFont fontNamesForFamilyName:family])
+    {
+      NSLog(@"  %@", name);
+    }
+  }
 
   /**
    * Loading JavaScript code - uncomment the one you want.
@@ -54,21 +61,6 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;
-}
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
-  return [RCTLinkingManager application:application openURL:url
-                   sourceApplication:sourceApplication annotation:annotation];
-}
-
-- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity
- restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler
-{
-  return [RCTLinkingManager application:application
-                continueUserActivity:userActivity
-                  restorationHandler:restorationHandler];
 }
 
 @end
